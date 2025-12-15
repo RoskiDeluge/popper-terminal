@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "popper-terminal",
+  "productName": "popper",
   "version": "0.1.0",
   "identifier": "com.robertodelgado.popper-terminal",
   "build": {
@@ -13,7 +13,7 @@
     "withGlobalTauri": true,
     "windows": [
       {
-        "title": "popper-terminal",
+        "title": "popper",
         "width": 800,
         "height": 600
       }
