@@ -18,7 +18,3 @@ Popper Terminal is a Tauri-based desktop terminal that bundles and runs the [Pop
    - `POPPER_PATH` should point to your Popper repo root; if omitted, the build script looks for a sibling `../popper` relative to `src-tauri`.
    - The build script runs `cargo build` for Popper and copies the binary into `src-tauri/bin` as a sidecar.
 3) Quit/relaunch to pick up icon or sidecar changes; `cargo clean` in `src-tauri` can help when assets cache.
-
-## Notes
-- Icons live in `src-tauri/icons`; replace `icon.icns` (macOS) and `icon.ico`/PNGs, then rebuild.
-- Status/errors surface in the UI and console; adjust logging in `src/main.ts` if needed.
