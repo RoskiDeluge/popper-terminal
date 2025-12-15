@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="/src/styles.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tauri App</title>
+    <script type="module" src="/src/main.ts" defer></script>
+  </head>
+
+  <body>
+    <main class="shell">
+      <header class="shell__header">
+        <div class="shell__title">
+          <span class="dot dot--green"></span>
+          popper
+        </div>
+        <div class="shell__controls">
+          <span id="status">Waiting to start…</span>
+          <button id="restart-btn" type="button">Restart shell</button>
+        </div>
+      </header>
+      <section id="terminal" class="terminal"></section>
+    </main>
+  </body>
+</html>
