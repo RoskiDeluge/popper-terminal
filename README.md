@@ -18,3 +18,7 @@ Popper Terminal is a Tauri-based desktop terminal that bundles and runs the [Pop
    - `POPPER_PATH` should point to your Popper repo root; if omitted, the build script looks for a sibling `../popper` relative to `src-tauri`.
    - The build script runs `cargo build` for Popper and copies the binary into `src-tauri/bin` as a sidecar.
 3) Quit/relaunch to pick up icon or sidecar changes; `cargo clean` in `src-tauri` can help when assets cache.
+
+## Launching the app
+After cloning both `popper-terminal` and `popper`, installing frontend deps, and running `cargo build`, launch from the repo root with:
+`npm run tauri dev`
