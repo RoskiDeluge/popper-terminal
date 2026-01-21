@@ -1,4 +1,4 @@
-# <img src="src-tauri/icons/128x128.png" alt="Popper Terminal icon" width="32" height="32" /> Popper Terminal
+# <img src="src-tauri/icons/icon.png" alt="Popper Terminal icon" width="32" height="32" /> Popper Terminal
 
 Popper Terminal is a Tauri-based desktop terminal that bundles and runs the [Popper shell](https://github.com/RoskiDeluge/popper) as its default session. It uses a PTY bridge and xterm.js frontend for interactive input/output.
 
