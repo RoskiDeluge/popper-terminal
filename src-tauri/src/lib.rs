@@ -107,7 +107,7 @@ fn start_session(
 ) -> Result<String, String> {
     let size = default_size(cols, rows);
     let pty_system = native_pty_system();
-    let mut pair = pty_system.openpty(size).map_err(|e| e.to_string())?;
+    let pair = pty_system.openpty(size).map_err(|e| e.to_string())?;
 
     let sidecar_path = resolve_sidecar(&app)?;
     let child = pair
