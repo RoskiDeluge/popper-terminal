@@ -17,10 +17,41 @@
         </div>
         <div class="shell__controls">
           <span id="status">Waiting to start…</span>
+          <button id="history-btn" type="button">History</button>
           <button id="restart-btn" type="button">Restart shell</button>
         </div>
       </header>
       <section id="terminal" class="terminal"></section>
     </main>
+
+    <aside id="history-panel" class="history history--hidden" aria-hidden="true">
+      <div class="history__header">
+        <h2>Session History</h2>
+        <button id="history-close-btn" type="button" class="history__close">Close</button>
+      </div>
+
+      <div class="history__controls">
+        <input id="history-search" type="search" placeholder="Search transcript/cwd…" />
+        <label class="history__toggle">
+          <input id="history-enabled" type="checkbox" checked />
+          Persist history
+        </label>
+        <button id="history-clear-btn" type="button" class="history__clear">Clear history</button>
+      </div>
+
+      <div class="history__content">
+        <div class="history__list-wrap">
+          <ul id="history-list" class="history__list"></ul>
+        </div>
+
+        <div class="history__detail">
+          <div class="history__detail-actions">
+            <button id="history-open-transcript-btn" type="button">Open transcript</button>
+            <button id="history-resume-btn" type="button">Resume context</button>
+          </div>
+          <pre id="history-transcript" class="history__transcript">Select a session to view transcript.</pre>
+        </div>
+      </div>
+    </aside>
   </body>
 </html>
