@@ -2,7 +2,7 @@ use std::{
     env,
     fs,
     path::{Path, PathBuf},
-    process::Command,
+    process::{Command, Stdio},
 };
 
 fn main() {
@@ -10,13 +10,31 @@ fn main() {
     tauri_build::build();
 }
 
+fn watch_dir(path: &Path) {
+    let entries = match fs::read_dir(path) {
+        Ok(entries) => entries,
+        Err(_) => return,
+    };
+
+    for entry in entries.flatten() {
+        let entry_path = entry.path();
+
+        if entry_path.is_dir() {
+            watch_dir(&entry_path);
+            continue;
+        }
+
+        println!("cargo:rerun-if-changed={}", entry_path.display());
+    }
+}
+
 fn build_popper_sidecar() {
     let manifest_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     let popper_path_env = env::var("POPPER_PATH").ok();
-    let popper_manifest = popper_path_env
+    let popper_root = popper_path_env
         .map(PathBuf::from)
-        .unwrap_or_else(|| manifest_dir.join("..").join("..").join("popper"))
-        .join("Cargo.toml");
+        .unwrap_or_else(|| manifest_dir.join("..").join("..").join("popper"));
+    let popper_manifest = popper_root.join("Cargo.toml");
 
     if !popper_manifest.exists() {
         println!(
@@ -28,39 +46,45 @@ fn build_popper_sidecar() {
 
     let profile = env::var("PROFILE").unwrap_or_else(|_| "release".into());
     let mut cmd = Command::new("cargo");
+    let popper_dir = popper_manifest.parent().unwrap_or(Path::new("."));
+    let sidecar_target_dir = manifest_dir.join("target").join("popper-sidecar");
     cmd.arg("build")
         .arg("--manifest-path")
-        .arg(&popper_manifest);
+        .arg(&popper_manifest)
+        .current_dir(popper_dir)
+        .env("CARGO_TARGET_DIR", &sidecar_target_dir)
+        .stdout(Stdio::inherit())
+        .stderr(Stdio::piped());
 
     if profile == "release" {
         cmd.arg("--release");
     }
 
-    match cmd.status() {
-        Ok(status) if status.success() => {}
-        Ok(status) => {
+    let profile_dir = if profile == "release" { "release" } else { "debug" };
+    let popper_bin = sidecar_target_dir
+        .join(profile_dir)
+        .join("popper");
+
+    match cmd.output() {
+        Ok(output) if output.status.success() => {}
+        Ok(output) => {
+            let stderr = String::from_utf8_lossy(&output.stderr);
             println!(
-                "cargo:warning=Failed to build popper sidecar (status {}), skipping copy",
-                status
+                "cargo:warning=Failed to build popper sidecar (status {}); attempting to reuse existing binary at {}{}{}",
+                output.status,
+                popper_bin.display(),
+                if stderr.trim().is_empty() { "" } else { ": " },
+                stderr.trim()
             );
-            return;
         }
         Err(err) => {
             println!(
-                "cargo:warning=Error invoking cargo to build popper sidecar: {}",
+                "cargo:warning=Error invoking cargo to build popper sidecar; attempting to reuse existing binary at {}: {}",
+                popper_bin.display(),
                 err
             );
-            return;
         }
     }
-
-    let profile_dir = if profile == "release" { "release" } else { "debug" };
-    let popper_bin = popper_manifest
-        .parent()
-        .unwrap_or(Path::new("."))
-        .join("target")
-        .join(profile_dir)
-        .join("popper");
 
     if !popper_bin.exists() {
         println!(
@@ -110,5 +134,10 @@ fn build_popper_sidecar() {
     }
 
     println!("cargo:rerun-if-changed={}", popper_manifest.display());
+    println!(
+        "cargo:rerun-if-changed={}",
+        popper_root.join("Cargo.lock").display()
+    );
+    watch_dir(&popper_root.join("src"));
     println!("cargo:rerun-if-env-changed=POPPER_PATH");
 }

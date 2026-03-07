@@ -10,22 +10,24 @@ Popper Terminal is a Tauri-based desktop terminal that bundles and runs the [pop
 ## Prerequisites
 - Rust toolchain (for Tauri backend and Popper)
 - Node 18+ (for Vite/Tauri frontend tooling)
-- Popper shell source checked out locally (set `POPPER_PATH` to its path)
+- A local checkout of the [popper](https://github.com/RoskiDeluge/popper) shell source
 
 ## Dev setup
-To launch the terminal with the Popper shell, follow this sequence from a fresh checkout:
+From a fresh checkout:
 1) `git clone https://github.com/RoskiDeluge/popper-terminal`
 2) `cd popper-terminal`
-3) `git clone https://github.com/RoskiDeluge/popper`
-4) From `popper-terminal`, stay at the repo root (the `popper` clone should live at `popper-terminal/popper`).
-5) `npm install`
-6) `npm run tauri dev`
+3) `cd ..`
+4) `git clone https://github.com/RoskiDeluge/popper`
+5) `cd popper-terminal`
+6) `npm install`
+7) `npm run tauri dev`
 
-- `POPPER_PATH` should point to your Popper repo root; if omitted, the build script looks for a sibling `../popper` relative to `src-tauri`.
+- `POPPER_PATH` should point to your Popper repo root; if omitted, the build script looks for a sibling `popper` repo next to `popper-terminal`.
 - If your Popper repo lives elsewhere, launch with `POPPER_PATH=/path/to/popper npm run tauri dev`.
-- The build script runs `cargo build` for Popper and copies the binary into `src-tauri/bin` as a sidecar.
-- Quit/relaunch to pick up icon or sidecar changes; `cargo clean` in `src-tauri` can help when assets cache.
+- Quit and relaunch the app to pick up icon or sidecar changes.
 
-## Launching the app
-After cloning both `popper-terminal` and `popper` and installing frontend deps, launch from the repo root with:
-`npm run tauri dev`
+## Sidecar rebuilds
+- Changes in the Popper repo's `src/`, `Cargo.toml`, or `Cargo.lock` trigger a fresh sidecar rebuild the next time you run `npm run tauri dev` or build from `src-tauri`.
+- Popper is built into `src-tauri/target/popper-sidecar`, then copied into `src-tauri/bin` for bundling.
+- On macOS Apple Silicon, the app writes both `src-tauri/bin/popper` and `src-tauri/bin/popper-aarch64-apple-darwin`.
+- To force a fresh sidecar rebuild manually, run `cargo build` in `src-tauri`.
