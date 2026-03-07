@@ -382,17 +382,22 @@ fn resolve_sidecar(app: &AppHandle) -> Result<PathBuf, String> {
     let target_triple = std::env::var("TAURI_ENV_TARGET_TRIPLE")
         .ok()
         .or_else(|| std::env::var("TARGET").ok());
+    let is_windows = target_triple
+        .as_deref()
+        .map(|target| target.contains("windows"))
+        .unwrap_or(cfg!(target_os = "windows"));
 
     let mut candidates = Vec::new();
-    let base_names = ["popper".to_string()]
-        .into_iter()
-        .chain(
-            target_triple
-                .as_ref()
-                .map(|t| format!("popper-{t}"))
-                .into_iter(),
-        )
-        .collect::<Vec<_>>();
+    let mut base_names = vec!["popper".to_string()];
+    if is_windows {
+        base_names.push("popper.exe".to_string());
+    }
+    if let Some(target) = target_triple.as_ref() {
+        base_names.push(format!("popper-{target}"));
+        if is_windows {
+            base_names.push(format!("popper-{target}.exe"));
+        }
+    }
 
     for name in &base_names {
         let rel = format!("bin/{name}");

@@ -10,6 +10,10 @@ fn main() {
     tauri_build::build();
 }
 
+fn is_windows_target(target: &str) -> bool {
+    target.contains("windows")
+}
+
 fn watch_dir(path: &Path) {
     let entries = match fs::read_dir(path) {
         Ok(entries) => entries,
@@ -45,12 +49,23 @@ fn build_popper_sidecar() {
     }
 
     let profile = env::var("PROFILE").unwrap_or_else(|_| "release".into());
+    let target_triple = env::var("TAURI_ENV_TARGET_TRIPLE")
+        .ok()
+        .or_else(|| env::var("TARGET").ok())
+        .unwrap_or_else(|| "unknown-target".to_string());
+    let binary_name = if is_windows_target(&target_triple) {
+        "popper.exe"
+    } else {
+        "popper"
+    };
     let mut cmd = Command::new("cargo");
     let popper_dir = popper_manifest.parent().unwrap_or(Path::new("."));
     let sidecar_target_dir = manifest_dir.join("target").join("popper-sidecar");
     cmd.arg("build")
         .arg("--manifest-path")
         .arg(&popper_manifest)
+        .arg("--target")
+        .arg(&target_triple)
         .current_dir(popper_dir)
         .env("CARGO_TARGET_DIR", &sidecar_target_dir)
         .stdout(Stdio::inherit())
@@ -62,8 +77,9 @@ fn build_popper_sidecar() {
 
     let profile_dir = if profile == "release" { "release" } else { "debug" };
     let popper_bin = sidecar_target_dir
+        .join(&target_triple)
         .join(profile_dir)
-        .join("popper");
+        .join(binary_name);
 
     match cmd.output() {
         Ok(output) if output.status.success() => {}
@@ -104,14 +120,19 @@ fn build_popper_sidecar() {
         return;
     }
 
-    let target_triple = env::var("TAURI_ENV_TARGET_TRIPLE")
-        .ok()
-        .or_else(|| env::var("TARGET").ok())
-        .unwrap_or_else(|| "unknown-target".to_string());
+    let sidecar_name = if is_windows_target(&target_triple) {
+        "popper.exe".to_string()
+    } else {
+        "popper".to_string()
+    };
 
     let copies = [
-        dest_dir.join("popper"),
-        dest_dir.join(format!("popper-{target_triple}")),
+        dest_dir.join(&sidecar_name),
+        dest_dir.join(if is_windows_target(&target_triple) {
+            format!("popper-{target_triple}.exe")
+        } else {
+            format!("popper-{target_triple}")
+        }),
     ];
 
     for dest_path in copies {
@@ -140,4 +161,6 @@ fn build_popper_sidecar() {
     );
     watch_dir(&popper_root.join("src"));
     println!("cargo:rerun-if-env-changed=POPPER_PATH");
+    println!("cargo:rerun-if-env-changed=TAURI_ENV_TARGET_TRIPLE");
+    println!("cargo:rerun-if-env-changed=TARGET");
 }
