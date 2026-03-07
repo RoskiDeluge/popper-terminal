@@ -3,6 +3,7 @@
 ## Versioning
 - Keep the app version aligned across `package.json`, `package-lock.json`, `src-tauri/Cargo.toml`, and `src-tauri/tauri.conf.json`.
 - Release tags use the format `vX.Y.Z`.
+- Use `npm run release:prepare -- X.Y.Z` to update the version metadata before building and tagging a release.
 
 ## CI
 - Pull requests to `main` and pushes to `main` run the CI workflow in `.github/workflows/ci.yml`.
@@ -21,8 +22,13 @@
 - If code signing is added later, platform signing secrets will need to be configured before publishing signed artifacts.
 
 ## Release steps
-1. Update the app version metadata.
-2. Commit and push the release changes.
-3. Create and push a Git tag such as `v0.2.1`.
-4. Wait for the draft release workflow to finish.
-5. Review the draft release and publish it manually in GitHub.
+1. Prepare the next release version with `npm run release:prepare -- X.Y.Z`.
+2. Run `npm run build` and `cargo build --manifest-path src-tauri/Cargo.toml`.
+3. Commit and push the release changes.
+4. Create and push a fresh tag such as `v0.2.2`.
+5. Wait for the draft release workflow to finish.
+6. Review the generated release notes and attached artifacts in the draft release, then publish it manually in GitHub.
+
+## Patch release guidance
+- Prefer a new patch version such as `v0.2.2` over reusing an already-triggered tag.
+- Reusing a tag can leave stale draft releases and ambiguous workflow history.

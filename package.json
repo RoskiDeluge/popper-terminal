@@ -1,13 +1,14 @@
 {
   "name": "popper-terminal",
   "private": true,
-  "version": "0.2.1",
+  "version": "0.2.2",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "tauri": "tauri"
+    "tauri": "tauri",
+    "release:prepare": "node scripts/prepare-release.mjs"
   },
   "dependencies": {
     "@tauri-apps/api": "^2",

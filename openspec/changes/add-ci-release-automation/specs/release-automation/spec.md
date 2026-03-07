@@ -21,6 +21,7 @@ The repository MUST support creating a draft GitHub release with bundled applica
 - **THEN** GitHub Actions builds the release artifacts for the configured target platforms
 - **AND** the workflow bundles the Popper sidecar into the application artifacts
 - **AND** the workflow creates or updates a draft GitHub release for that version
+- **AND** the draft release includes generated release notes
 
 #### Scenario: Unsupported platform excluded
 - **WHEN** the bundled Popper shell does not build on a desktop target platform
@@ -39,3 +40,8 @@ The project MUST keep user-facing application version metadata aligned across pa
 - **WHEN** a maintainer prepares version `0.2.1`
 - **THEN** the version metadata in the Node package manifest, Rust crate manifest, and Tauri configuration all read `0.2.1`
 - **AND** the release workflow uses that aligned version to name release artifacts
+
+#### Scenario: Prepare next patch release safely
+- **WHEN** a maintainer needs to cut the next patch release after an earlier tag already triggered automation
+- **THEN** the project provides a documented preparation flow for creating a fresh patch version and tag
+- **AND** the flow avoids reusing an already-triggered release tag
