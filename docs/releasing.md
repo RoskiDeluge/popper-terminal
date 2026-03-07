@@ -10,9 +10,10 @@
 
 ## Release automation
 - Pushing a tag such as `v0.2.1` triggers `.github/workflows/release.yml`.
-- The release workflow builds draft Tauri artifacts for macOS Apple Silicon, macOS Intel, Linux, and Windows.
+- The release workflow builds draft Tauri artifacts for macOS Apple Silicon, macOS Intel, and Linux.
 - The workflow clones `RoskiDeluge/popper` and attempts to check out a matching tag before falling back to the Popper default branch.
 - The bundled Popper sidecar is built during the Tauri build through `src-tauri/build.rs` using `POPPER_PATH`.
+- Windows releases are currently excluded because the Popper shell uses Unix-specific process and permission APIs and does not build successfully on Windows yet.
 
 ## Repository settings
 - The release workflow requires the default `GITHUB_TOKEN` with `contents: write` permission.

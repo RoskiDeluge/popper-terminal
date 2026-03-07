@@ -27,6 +27,7 @@ The repository has no existing GitHub Actions workflows. Tauri release automatio
 - Multi-platform Tauri builds may require platform-specific system packages and secrets. Mitigation: start with official Tauri GitHub workflow patterns and document required repository configuration.
 - Pulling Popper from another repository in CI introduces an extra availability dependency. Mitigation: pin the checkout to an explicit ref or to the matching version tag when possible.
 - Unsigned binaries may still produce platform trust warnings. Mitigation: treat signing as a later follow-up.
+- Popper currently uses Unix-specific APIs and does not build on Windows. Mitigation: limit automated release targets to currently supported desktop platforms until Popper gains Windows support.
 
 ## Migration Plan
 1. Approve the spec change.

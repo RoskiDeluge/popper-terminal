@@ -22,6 +22,11 @@ The repository MUST support creating a draft GitHub release with bundled applica
 - **AND** the workflow bundles the Popper sidecar into the application artifacts
 - **AND** the workflow creates or updates a draft GitHub release for that version
 
+#### Scenario: Unsupported platform excluded
+- **WHEN** the bundled Popper shell does not build on a desktop target platform
+- **THEN** the release workflow excludes that platform from automated release builds
+- **AND** the release documentation identifies the unsupported platform and why it is excluded
+
 #### Scenario: Release workflow permissions
 - **WHEN** the release workflow runs
 - **THEN** it uses repository permissions and secrets documented by the project
