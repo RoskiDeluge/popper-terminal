@@ -11,7 +11,8 @@
 
 ## Release automation
 - Pushing a tag such as `v0.2.1` triggers `.github/workflows/release.yml`.
-- The release workflow builds draft Tauri artifacts for macOS Apple Silicon, macOS Intel, and Linux.
+- The release workflow builds Tauri artifacts for macOS Apple Silicon, macOS Intel, and Linux, then publishes the GitHub release automatically.
+- macOS automation currently publishes `.app` bundles instead of `.dmg` images because the DMG bundling step has been failing in GitHub Actions after the app bundle itself is produced.
 - The workflow clones `RoskiDeluge/popper` and attempts to check out a matching tag before falling back to the Popper default branch.
 - The bundled Popper sidecar is built during the Tauri build through `src-tauri/build.rs` using `POPPER_PATH`.
 - Windows releases are currently excluded because the Popper shell uses Unix-specific process and permission APIs and does not build successfully on Windows yet.
@@ -26,8 +27,8 @@
 2. Run `npm run build` and `cargo build --manifest-path src-tauri/Cargo.toml`.
 3. Commit and push the release changes.
 4. Create and push a fresh tag such as `v0.2.2`.
-5. Wait for the draft release workflow to finish.
-6. Review the generated release notes and attached artifacts in the draft release, then publish it manually in GitHub.
+5. Wait for the release workflow to finish publishing the GitHub release and uploading the artifacts.
+6. Review the generated release notes and attached artifacts in GitHub.
 
 ## Patch release guidance
 - Prefer a new patch version such as `v0.2.2` over reusing an already-triggered tag.

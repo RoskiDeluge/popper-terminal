@@ -14,14 +14,14 @@ The repository MUST run automated validation on pull requests and on pushes to `
 - **AND** the workflow verifies both the frontend project and the Tauri backend build path
 
 ### Requirement: Produce Draft Releases from Version Tags
-The repository MUST support creating a draft GitHub release with bundled application artifacts from a pushed version tag.
+The repository MUST support publishing a GitHub release with bundled application artifacts from a pushed version tag.
 
 #### Scenario: Tagged release build
 - **WHEN** a maintainer pushes a version tag that matches the documented release pattern
 - **THEN** GitHub Actions builds the release artifacts for the configured target platforms
 - **AND** the workflow bundles the Popper sidecar into the application artifacts
-- **AND** the workflow creates or updates a draft GitHub release for that version
-- **AND** the draft release includes generated release notes
+- **AND** the workflow creates or updates a published GitHub release for that version
+- **AND** the published release includes generated release notes
 
 #### Scenario: Unsupported platform excluded
 - **WHEN** the bundled Popper shell does not build on a desktop target platform
