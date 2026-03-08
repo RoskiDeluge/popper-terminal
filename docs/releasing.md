@@ -12,7 +12,6 @@
 ## Release automation
 - Pushing a tag such as `v0.2.1` triggers `.github/workflows/release.yml`.
 - The release workflow builds Tauri artifacts for macOS Apple Silicon, macOS Intel, and Linux, then publishes the GitHub release automatically.
-- macOS automation currently publishes `.app` bundles instead of `.dmg` images because the DMG bundling step has been failing in GitHub Actions after the app bundle itself is produced.
 - The workflow clones `RoskiDeluge/popper` and attempts to check out a matching tag before falling back to the Popper default branch.
 - The bundled Popper sidecar is built during the Tauri build through `src-tauri/build.rs` using `POPPER_PATH`.
 - Windows releases are currently excluded because the Popper shell uses Unix-specific process and permission APIs and does not build successfully on Windows yet.
